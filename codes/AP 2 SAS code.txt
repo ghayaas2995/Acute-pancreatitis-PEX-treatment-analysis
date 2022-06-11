@@ -1,0 +1,77 @@
+* Accuracy Check of variables:
+
+* importing the excel files of selected variables performed in R;
+
+PROC IMPORT OUT=data_ap_selected
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/AP_selected.xlsx'
+	DBMS=XLSX REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+PROC MEANS DATA=data_ap_selected n nmiss mean median min max range;
+output out = temp;
+VAR _numeric_;
+RUN;
+
+proc freq data=data_ap_selected;
+table _char_;
+run;
+
+* importing the AP clean_1 dataset from python;
+PROC IMPORT OUT=data_ap_clean1
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/AP_selected_clean1.xlsx'
+	DBMS=XLSX REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+PROC MEANS DATA=data_ap_clean1 n nmiss mean median min max range;
+VAR _numeric_;
+RUN;
+
+
+* importing imputed datasets from R;
+
+PROC IMPORT OUT=data_ap_mice
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/AP_clean_MiceImputed.csv'
+	DBMS=CSV REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+PROC IMPORT OUT=data_ap_amelia
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/AP_cleanAmeliaImputed1.csv'
+	DBMS=CSV REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+PROC IMPORT OUT=data_ap_missforest
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/AP_clean_missforestImputed.csv'
+	DBMS=CSV REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+data data_ap_mice (drop=VAR1);
+set data_ap_mice;
+run;
+data data_ap_mice (drop=Main.reason.to.admit.hospital);
+set data_ap_mice;
+run;
+
+title 'Summary statistics for MICE imputed Dataset';
+PROC MEANS DATA=data_ap_mice n nmiss mean median min max range skewness;
+VAR _numeric_;
+RUN;
+
+title 'Summary statistics for Amelia imputed Dataset';
+PROC MEANS DATA=data_ap_amelia n nmiss mean median min max range skewness;
+VAR _numeric_;
+RUN;
+
+title 'Summary statistics for Miss Forest imputed Dataset';
+PROC MEANS DATA=data_ap_missforest n nmiss mean median min max range skewness;
+VAR _numeric_;
+RUN;

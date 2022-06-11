@@ -1,0 +1,88 @@
+* importing the AP dataset;
+PROC IMPORT OUT=data_ap
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/APNotCleaned.xlsm'
+	DBMS=XLSX REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+* importing the AP translated dataset;
+PROC IMPORT OUT=data_ap_translated
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/APNotCleaned_translated.xlsm'
+	DBMS=XLSX REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+
+* checking the measures of central tendencies for numerical variables;
+PROC MEANS DATA=data_ap_translated n nmiss mean median min max range;
+output out = temp;
+VAR _numeric_;
+RUN;
+
+proc freq data=data_ap_translated;
+table _char_;
+run;
+
+*/
+*wherever there  is 'NA' string in numeric variables, lets replace that with a '.' and ' ' for character variables;
+
+data data_ap_translated;
+set data_ap_translated;
+
+array num_array _numeric_;
+do over num_array;
+if num_array = 'NA' then num_array =".";
+end;
+run;
+
+data data_ap_translated;
+set data_ap_translated;
+
+array char_array _character_;
+do over char_array;
+if char_array = 'NA' then char_array ="";
+end;
+run;
+*/
+;
+
+PROC freq DATA=data_ap_translated ;
+table _char_/missing;
+RUN;
+
+proc tabulate data=data_ap_translated f=comma6.0;
+   var _numeric_;
+   table _numeric_,
+      nmiss n/ box='Variable';
+    class _character_ / missing;
+    table _character_,n;
+run;
+
+* export the transposed temp file from proc means;
+
+PROC EXPORT DATA=WORK.transpose 
+		OUTFILE='C:\E DRIVE\LANGARA COLLEGE\DANA 4830-001\Assignment 1\missing.xls' DBMS=xls 
+		REPLACE;
+RUN;
+
+* Accuracy Check of variables:
+
+* importing the excel files of selected variables performed in R;
+
+PROC IMPORT OUT=data_ap_selected
+	DATAFILE='/home/u52182037/DANA 4830/Assignment 1/AP_selected.xlsx'
+	DBMS=XLSX REPLACE;
+	GETNAMES=YES;
+	DATAROW=2;
+RUN;
+
+PROC MEANS DATA=data_ap_selected n nmiss mean median min max range;
+output out = temp;
+VAR _numeric_;
+RUN;
+
+proc freq data=data_ap_selected;
+table _char_;
+run;
