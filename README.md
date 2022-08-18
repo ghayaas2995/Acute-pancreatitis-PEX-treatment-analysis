@@ -1,6 +1,6 @@
 # Acute-pancreatitis-PEX-treatment-analysis
 
-Analysis and comparision of Plasma Exchange Therapy vs Vietnam's ministry of health guidelines for the treatment of Acute Pancreatitis in patients. Data cleaning, translating, regression modelling, Linear discriminant analysis and K Nearest Neighnour analysis in R
+Analysis and comparision of Plasma Exchange Therapy vs Vietnam's ministry of health guidelines for the treatment of Acute Pancreatitis in patients. Data cleaning, translating, regression modelling, Linear discriminant analysis and K Nearest Neighbour analysis in R
 
 The dataset consists of only 165 rows / patient records with 195 variables obtained from a hospital in Vietnam. The dataset is characterized with high amount of missing data, high dimensionality, data inaccuracies and recorded in Vietnamese language. 
 
